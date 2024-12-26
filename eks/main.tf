@@ -6,16 +6,16 @@ data "aws_acm_certificate" "issued" {
 module "vpc" {
   source       = "../aws/vpc"
   cluster_name = "${var.cluster_name}-${var.environment}"
-  environment = var.environment
+  environment  = var.environment
 }
 
 module "rds" {
-  source       = "../aws/rds"
-  dbname = "${var.dbname}"
-  subnet_ids = module.vpc.subnet_db_ids
-  dbuser = var.dbuser
-  dbpassword = var.dbpass
-  vpc_id = module.vpc.vpc_id
+  source      = "../aws/rds"
+  dbname      = var.dbname
+  subnet_ids  = module.vpc.subnet_db_ids
+  dbuser      = var.dbuser
+  dbpassword  = var.dbpass
+  vpc_id      = module.vpc.vpc_id
   environment = var.environment
 }
 
@@ -62,7 +62,7 @@ data "aws_route53_zone" "main" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0" 
+  version = "~> 1.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -95,15 +95,16 @@ module "eks_blueprints_addons" {
     chart_version = "67.4.0"
     repository    = "https://prometheus-community.github.io/helm-charts"
     namespace     = "kube-prometheus-stack"
-    values        = [templatefile("${path.module}/values/kube-prometheus-stack.yaml", {
+    values = [templatefile("${path.module}/values/kube-prometheus-stack.yaml", {
       domain       = var.domain,
+      tls_cert_arn = data.aws_acm_certificate.issued.arn
     })]
   }
 
   tags = {
     Environment = var.environment
   }
-    #   depends_on = [ module.kubernetes_resources ]
+  #   depends_on = [ module.kubernetes_resources ]
 }
 
 
@@ -152,13 +153,13 @@ resource "kubernetes_manifest" "ebs_storage_class" {
     "metadata" = {
       "name" = "auto-ebs-sc"
       "annotations" = {
-        "storageclass.kubernetes.io/is-default-class"= "true"
+        "storageclass.kubernetes.io/is-default-class" = "true"
       }
     }
-    "provisioner" = "ebs.csi.eks.amazonaws.com"
+    "provisioner"       = "ebs.csi.eks.amazonaws.com"
     "volumeBindingMode" = "WaitForFirstConsumer"
     "parameters" = {
-      "type" = "gp3"
+      "type"      = "gp3"
       "encrypted" = "true"
     }
   }

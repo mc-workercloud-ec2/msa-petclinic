@@ -12,17 +12,17 @@ variable "cluster_name" {
 
 }
 variable "domain" {
-    type        = string
+  type = string
 }
 
 variable "dbname" {
-    type        = string
+  type = string
 }
 
 variable "dbuser" {
-    type        = string
+  type = string
 }
 
 variable "dbpass" {
-    type        = string
+  type = string
 }

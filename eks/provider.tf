@@ -13,12 +13,12 @@ terraform {
     encrypt        = true
     region         = "ap-northeast-2"
   }
-  
+
 }
 
 provider "kubernetes" {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   exec {
     api_version = "client.authentication.k8s.io/v1"
     args        = ["eks", "get-token", "--cluster-name", "${var.cluster_name}-${var.environment}"]
@@ -29,10 +29,10 @@ provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  exec {
-    api_version = "client.authentication.k8s.io/v1"
-    args        = ["eks", "get-token", "--cluster-name", "${var.cluster_name}-${var.environment}"]
-    command     = "aws"
+    exec {
+      api_version = "client.authentication.k8s.io/v1"
+      args        = ["eks", "get-token", "--cluster-name", "${var.cluster_name}-${var.environment}"]
+      command     = "aws"
+    }
   }
-}
 }
