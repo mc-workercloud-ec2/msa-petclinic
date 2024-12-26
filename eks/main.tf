@@ -30,9 +30,6 @@ module "eks" {
     vpc-cni = {
       most_recent = true
     }
-    aws-ebs-csi-driver= {
-      most_recent = true
-    }
   }
 
   vpc_id     = module.vpc.vpc_id
@@ -134,6 +131,25 @@ resource "kubernetes_manifest" "alb_ingress_class" {
         "kind"     = "IngressClassParams"
         "name"     = "alb"
       }
+    }
+  }
+}
+
+resource "kubernetes_manifest" "ebs_storage_class" {
+  manifest = {
+    "apiVersion" = "networking.k8s.io/v1"
+    "kind"       = "StorageClass"
+    "metadata" = {
+      "name" = "auto-ebs-sc"
+      "annotations" = {
+        "storageclass.kubernetes.io/is-default-class"= "true"
+      }
+    }
+    "provisioner" = "ebs.csi.eks.amazonaws.com"
+    "volumeBindingMode" = "WaitForFirstConsumer"
+    "parameters" = {
+      "type" = "gp3"
+      "encrypted" = "true"
     }
   }
 }
