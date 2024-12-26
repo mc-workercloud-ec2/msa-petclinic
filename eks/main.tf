@@ -9,6 +9,16 @@ module "vpc" {
   environment = var.environment
 }
 
+module "rds" {
+  source       = "../aws/rds"
+  dbname = "${var.dbname}"
+  subnet_ids = module.vpc.subnet_db_ids
+  dbuser = var.dbuser
+  dbpassword = var.dbpass
+  vpc_id = module.vpc.vpc_id
+  environment = var.environment
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~>20.31"
@@ -137,7 +147,7 @@ resource "kubernetes_manifest" "alb_ingress_class" {
 
 resource "kubernetes_manifest" "ebs_storage_class" {
   manifest = {
-    "apiVersion" = "networking.k8s.io/v1"
+    "apiVersion" = "storage.k8s.io/v1"
     "kind"       = "StorageClass"
     "metadata" = {
       "name" = "auto-ebs-sc"

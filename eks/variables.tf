@@ -14,3 +14,15 @@ variable "cluster_name" {
 variable "domain" {
     type        = string
 }
+
+variable "dbname" {
+    type        = string
+}
+
+variable "dbuser" {
+    type        = string
+}
+
+variable "dbpass" {
+    type        = string
+}
