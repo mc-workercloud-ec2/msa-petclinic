@@ -12,9 +12,7 @@ locals {
   ]
 }
 
-data "hcp_vault_secrets_app" "aws_app" {
-  app_name = "AWS"
-}
+
 
 
 /////// VPC ///////
