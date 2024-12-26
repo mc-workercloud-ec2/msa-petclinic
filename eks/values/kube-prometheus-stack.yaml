@@ -7,9 +7,7 @@ grafana:
       domain: "grafana.${domain}"
         # The full public facing url you use in browser, used for redirects and emails
       root_url: "https://grafana.${domain}"
-  persistence:
-    enabled: true
-    type: pvc
+
   adminPassword: rmfkvksk1!
   defaultDashboardsTimezone: Asia/Seoul
   ingress:
@@ -20,7 +18,7 @@ grafana:
     - "grafana.${domain}"
     
 prometheus:
-  prometheusSpec: 
+  prometheusSpec:
     podMonitorSelectorNilUsesHelmValues: false
     retention: 18d
     retentionSize: 10GiB
@@ -28,8 +26,9 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
+          storageClassName: auto-ebs-sc
           accessModes:
-          - ReadWriteOnce
+            - ReadWriteOnce
           resources:
             requests:
               storage: 10Gi
