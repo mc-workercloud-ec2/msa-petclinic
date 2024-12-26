@@ -1,0 +1,19 @@
+config:
+  clients:
+    - url : http://loki-gateway.loki/loki/api/v1/push
+      external_labels:
+        cluster: test
+  snippets:
+    pipelineStages:
+    - cri: {}
+    - match:
+        selector: '{namespace!~"loki"}'
+        action: drop
+    - labels:
+        level:
+        sourcefile:
+  common:
+    - action: replace
+      source_labels:
+        - __meta_kubernetes_namespace
+      target_label: namespace

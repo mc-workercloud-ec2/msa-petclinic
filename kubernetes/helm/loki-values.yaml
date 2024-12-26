@@ -1,0 +1,34 @@
+deploymentMode: SingleBinary
+loki:
+  limits_config:
+    retention_period: 24h
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: s3
+    bucketNames:
+      chunks: "${loki_bucket}"
+      ruler: "${loki_bucket}"
+    s3:
+      region: ap-northeast-2
+  auth_enabled: false
+  schemaConfig:
+    configs:
+      - from: 2024-08-22
+        object_store: s3
+        store: tsdb
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+read:
+  replicas: 0
+backend:
+  replicas: 0
+write:
+  replicas: 0
+
+serviceAccount:
+ create: true
+ annotations:
+   "eks.amazonaws.com/role-arn": "${loki_arn}" # The service role you created

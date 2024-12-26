@@ -19,11 +19,6 @@ module "rds" {
   environment = var.environment
 }
 
-module "ecr" {
-  source = "../aws/ecr"
-  container_name = "ec2-team"
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~>20.31"
@@ -59,7 +54,23 @@ module "eks" {
   tags = {
     Environment = var.environment
   }
+  
 }
+module "s3" {
+    source       = "../aws/s3"
+    s3_endpoint  = module.vpc.s3_endpoint
+    environment  = var.environment
+    oidc         = module.eks.oidc_provider
+    oidc_arn     = module.eks.oidc_provider_arn
+}
+
+
+module "helm" {
+  source = "../kubernetes/helm"
+  loki_arn = module.s3.loki_role_arn
+  loki_bucket = module.s3.loki_bucket
+}
+
 
 data "aws_route53_zone" "main" {
   name = "${var.domain}."
@@ -115,7 +126,7 @@ module "eks_blueprints_addons" {
 
 
 
-//////////////// ALB Controller //////////////////
+//////////////// CRD //////////////////
 
 resource "kubernetes_manifest" "alb_ingress_class_params" {
   manifest = {
@@ -172,3 +183,7 @@ resource "kubernetes_manifest" "ebs_storage_class" {
 
 ////////////////////////////////////////
 
+module "ecr" {
+  source = "../aws/ecr"
+  container_name = "ec2-team"
+}

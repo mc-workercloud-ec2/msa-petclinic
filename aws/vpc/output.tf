@@ -9,3 +9,6 @@ output "subnet_ids" {
 output "subnet_db_ids" {
   value       = aws_subnet.db[*].id
 }
+output "s3_endpoint" {
+  value = aws_vpc_endpoint.s3.id
+}
