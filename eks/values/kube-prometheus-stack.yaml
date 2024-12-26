@@ -1,0 +1,40 @@
+	alertmanager:
+  enabled: false
+  
+grafana:
+  grafana.ini:
+    server:
+      domain: "grafana.${domain}"
+        # The full public facing url you use in browser, used for redirects and emails
+      root_url: "https://grafana.${domain}"
+  persistence:
+    enabled: true
+    type: pvc
+  adminPassword: rmfkvksk1!
+  defaultDashboardsTimezone: Asia/Seoul
+  ingress:
+    enabled: true    
+    annotations:
+      kubernetes.io/ingress.class: internal-nginx
+    hosts:
+    - "grafana.${domain}"
+    
+prometheus:
+  prometheusSpec: 
+    podMonitorSelectorNilUsesHelmValues: false
+    retention: 18d
+    retentionSize: 10GiB
+    serviceMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+prometheus-node-exporter:
+  prometheus:
+    monitor:
+      interval: 15s

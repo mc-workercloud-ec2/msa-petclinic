@@ -61,7 +61,7 @@ module "eks_blueprints_addons" {
 
 
 
-  #  enable_kube_prometheus_stack           = true
+  enable_kube_prometheus_stack          = true
   enable_argocd                         = true
   enable_metrics_server                 = true
   enable_external_dns                   = true
@@ -80,13 +80,15 @@ module "eks_blueprints_addons" {
     })]
   }
 
-#   kube_prometheus_stack = {
-#     name          = "kube-prometheus-stack"
-#     chart_version = "67.4.0"
-#     repository    = "https://prometheus-community.github.io/helm-charts"
-#     namespace     = "kube-prometheus-stack"
-#     values        = [templatefile("${path.module}/values/kube-prometheus-stack.yaml", {})]
-#   }
+  kube_prometheus_stack = {
+    name          = "kube-prometheus-stack"
+    chart_version = "67.4.0"
+    repository    = "https://prometheus-community.github.io/helm-charts"
+    namespace     = "kube-prometheus-stack"
+    values        = [templatefile("${path.module}/values/kube-prometheus-stack.yaml", {
+      domain       = var.domain,
+    })]
+  }
 
   tags = {
     Environment = var.environment
