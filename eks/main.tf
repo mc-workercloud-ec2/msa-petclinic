@@ -19,6 +19,11 @@ module "rds" {
   environment = var.environment
 }
 
+module "ecr" {
+  source = "../aws/ecr"
+  container_name = "ec2-team"
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~>20.31"
