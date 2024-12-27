@@ -2,6 +2,9 @@ data "aws_acm_certificate" "issued" {
   domain   = "*.${var.domain}"
   statuses = ["ISSUED"]
 }
+module "github" {
+  source = "../aws/github"
+}
 
 module "vpc" {
   source       = "../aws/vpc"
